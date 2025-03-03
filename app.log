@@ -3,3 +3,340 @@
 2025-03-03 13:32:10,777 - INFO - Matched record: GRADY MEMORIAL HOSPITAL CORPORATION
 2025-03-03 13:32:10,777 - INFO - Current index after match: 1
 2025-03-03 13:32:10,777 - INFO - Next record: COMMUNITY CARE HEALTH NETWORK
+2025-03-03 13:56:58,593 - DEBUG - Fetching record at index: 0
+2025-03-03 13:56:58,597 - DEBUG - Record found: first_record.orig_Organization_Name                           GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHubOrganizationId                              6793e05e37747f17b541791c
+first_record.fuzzy_fuzzy_match_score                                                        100.0
+first_record.fuzzy_input_Original_Label                       GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHub_Original_Label                              Grady Memorial Hospital
+first_record.fuzzy_input_Cleaned_Label                                    grady memorial hospital
+first_record.fuzzy_ConnectHub_Cleaned_Label                               grady memorial hospital
+first_record.fuzzy_ConnectHubDisplayLabel                                     Grady Health System
+unique_npis                                     ["1679994693","1619117231","1720353881","13665...
+npi_count                                                                                     193
+unique_input_states                                                                        ["GA"]
+unique_connecthub_states                                                                      NaN
+Name: 0, dtype: object
+2025-03-03 13:56:58,598 - DEBUG - Current index after match: 1
+2025-03-03 13:56:58,598 - DEBUG - Fetching record at index: 1
+2025-03-03 13:56:58,599 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                           Community Health Care Inc.
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 1, dtype: object
+2025-03-03 14:50:24,191 - DEBUG - Fetching record at index: 0
+2025-03-03 14:50:24,195 - DEBUG - Record found: first_record.orig_Organization_Name                           GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHubOrganizationId                              6793e05e37747f17b541791c
+first_record.fuzzy_fuzzy_match_score                                                        100.0
+first_record.fuzzy_input_Original_Label                       GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHub_Original_Label                              Grady Memorial Hospital
+first_record.fuzzy_input_Cleaned_Label                                    grady memorial hospital
+first_record.fuzzy_ConnectHub_Cleaned_Label                               grady memorial hospital
+first_record.fuzzy_ConnectHubDisplayLabel                                     Grady Health System
+unique_npis                                     ["1679994693","1619117231","1720353881","13665...
+npi_count                                                                                     193
+unique_input_states                                                                        ["GA"]
+unique_connecthub_states                                                                      NaN
+Name: 0, dtype: object
+2025-03-03 14:50:39,326 - DEBUG - Fetching record at index: 0
+2025-03-03 14:50:39,329 - DEBUG - Record found: first_record.orig_Organization_Name                           GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHubOrganizationId                              6793e05e37747f17b541791c
+first_record.fuzzy_fuzzy_match_score                                                        100.0
+first_record.fuzzy_input_Original_Label                       GRADY MEMORIAL HOSPITAL CORPORATION
+first_record.fuzzy_ConnectHub_Original_Label                              Grady Memorial Hospital
+first_record.fuzzy_input_Cleaned_Label                                    grady memorial hospital
+first_record.fuzzy_ConnectHub_Cleaned_Label                               grady memorial hospital
+first_record.fuzzy_ConnectHubDisplayLabel                                     Grady Health System
+unique_npis                                     ["1679994693","1619117231","1720353881","13665...
+npi_count                                                                                     193
+unique_input_states                                                                        ["GA"]
+unique_connecthub_states                                                                      NaN
+Name: 0, dtype: object
+2025-03-03 14:50:39,329 - DEBUG - Fetching record at index: 1
+2025-03-03 14:50:39,330 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                           Community Health Care Inc.
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 1, dtype: object
+2025-03-03 14:50:39,338 - DEBUG - Fetching record at index: 1
+2025-03-03 14:50:39,340 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                           Community Health Care Inc.
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 1, dtype: object
+2025-03-03 14:50:43,631 - DEBUG - Fetching record at index: 1
+2025-03-03 14:50:43,633 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                           Community Health Care Inc.
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 1, dtype: object
+2025-03-03 14:50:43,633 - DEBUG - Fetching record at index: 2
+2025-03-03 14:50:43,634 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                            Community Health Care Inc
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 2, dtype: object
+2025-03-03 14:50:43,642 - DEBUG - Fetching record at index: 2
+2025-03-03 14:50:43,644 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                            Community Health Care Inc
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 2, dtype: object
+2025-03-03 14:50:44,336 - DEBUG - Fetching record at index: 2
+2025-03-03 14:50:44,337 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                            Community Health Care Inc
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 2, dtype: object
+2025-03-03 14:50:44,337 - DEBUG - Fetching record at index: 3
+2025-03-03 14:50:44,338 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label    Community Health Network (AKA Stephen F Austin...
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 3, dtype: object
+2025-03-03 14:50:44,345 - DEBUG - Fetching record at index: 3
+2025-03-03 14:50:44,346 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label    Community Health Network (AKA Stephen F Austin...
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 3, dtype: object
+2025-03-03 14:50:45,130 - DEBUG - Fetching record at index: 3
+2025-03-03 14:50:45,131 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label    Community Health Network (AKA Stephen F Austin...
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 3, dtype: object
+2025-03-03 14:50:45,131 - DEBUG - Fetching record at index: 4
+2025-03-03 14:50:45,131 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                             Community Health Network
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 4, dtype: object
+2025-03-03 14:50:45,137 - DEBUG - Fetching record at index: 4
+2025-03-03 14:50:45,138 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                             Community Health Network
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 4, dtype: object
+2025-03-03 14:50:45,731 - DEBUG - Fetching record at index: 4
+2025-03-03 14:50:45,733 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                             Community Health Network
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 4, dtype: object
+2025-03-03 14:50:45,733 - DEBUG - Fetching record at index: 5
+2025-03-03 14:50:45,734 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                                Community Health Care
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 5, dtype: object
+2025-03-03 14:50:45,743 - DEBUG - Fetching record at index: 5
+2025-03-03 14:50:45,745 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                                Community Health Care
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 5, dtype: object
+2025-03-03 14:51:13,664 - DEBUG - Fetching record at index: 5
+2025-03-03 14:51:13,669 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              6655e9d4e572785194783e36
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label                                Community Health Care
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                                 community health care
+first_record.fuzzy_ConnectHubDisplayLabel                              Community Health Care Inc.
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 5, dtype: object
+2025-03-03 14:51:13,670 - DEBUG - Fetching record at index: 6
+2025-03-03 14:51:13,670 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label           Community Health Network (Indianapolis IN)
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 6, dtype: object
+2025-03-03 14:51:13,680 - DEBUG - Fetching record at index: 6
+2025-03-03 14:51:13,682 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label           Community Health Network (Indianapolis IN)
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 6, dtype: object
+2025-03-03 14:51:14,801 - DEBUG - Fetching record at index: 6
+2025-03-03 14:51:14,804 - DEBUG - Record found: first_record.orig_Organization_Name                                 COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHubOrganizationId                              66eaf750a14e97c599b58b0c
+first_record.fuzzy_fuzzy_match_score                                                         95.0
+first_record.fuzzy_input_Original_Label                             COMMUNITY CARE HEALTH NETWORK
+first_record.fuzzy_ConnectHub_Original_Label           Community Health Network (Indianapolis IN)
+first_record.fuzzy_input_Cleaned_Label                              community care health network
+first_record.fuzzy_ConnectHub_Cleaned_Label                              community health network
+first_record.fuzzy_ConnectHubDisplayLabel                                Community Health Network
+unique_npis                                     ["1801392303","1679056543","1841387693","19328...
+npi_count                                                                                     178
+unique_input_states                                                                   ["GA","AZ"]
+unique_connecthub_states                                                                      NaN
+Name: 6, dtype: object
+2025-03-03 14:51:14,805 - DEBUG - Fetching record at index: 7
+2025-03-03 14:51:14,806 - DEBUG - Record found: first_record.orig_Organization_Name                                   WELLSTAR MEDICAL GROUP, LLC
+first_record.fuzzy_ConnectHubOrganizationId                              66e8204221afba04642bdd6f
+first_record.fuzzy_fuzzy_match_score                                                         90.0
+first_record.fuzzy_input_Original_Label                               WELLSTAR MEDICAL GROUP, LLC
+first_record.fuzzy_ConnectHub_Original_Label                                             WellStar
+first_record.fuzzy_input_Cleaned_Label                                     wellstar medical group
+first_record.fuzzy_ConnectHub_Cleaned_Label                                              wellstar
+first_record.fuzzy_ConnectHubDisplayLabel                                                WellStar
+unique_npis                                     ["1871179291","1710931548","1801392303","13760...
+npi_count                                                                                      89
+unique_input_states                                                                        ["GA"]
+unique_connecthub_states                                                                      NaN
+Name: 7, dtype: object
+2025-03-03 14:51:14,813 - DEBUG - Fetching record at index: 7
+2025-03-03 14:51:14,815 - DEBUG - Record found: first_record.orig_Organization_Name                                   WELLSTAR MEDICAL GROUP, LLC
+first_record.fuzzy_ConnectHubOrganizationId                              66e8204221afba04642bdd6f
+first_record.fuzzy_fuzzy_match_score                                                         90.0
+first_record.fuzzy_input_Original_Label                               WELLSTAR MEDICAL GROUP, LLC
+first_record.fuzzy_ConnectHub_Original_Label                                             WellStar
+first_record.fuzzy_input_Cleaned_Label                                     wellstar medical group
+first_record.fuzzy_ConnectHub_Cleaned_Label                                              wellstar
+first_record.fuzzy_ConnectHubDisplayLabel                                                WellStar
+unique_npis                                     ["1871179291","1710931548","1801392303","13760...
+npi_count                                                                                      89
+unique_input_states                                                                        ["GA"]
+unique_connecthub_states                                                                      NaN
+Name: 7, dtype: object

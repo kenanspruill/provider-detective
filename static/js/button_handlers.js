@@ -1,54 +1,84 @@
-// Make sure these functions are available (imported from utility_functions.js)
-/* global showLoadingSpinner, hideLoadingSpinner, logResponse, updateReviewStatus,
-   fetchCurrentRecord, fetchUpcomingRecords, incrementAssignmentCounter */
+// button_handlers.js
+import {
+    showLoadingSpinner,
+    hideLoadingSpinner,
+    logResponse,
+    updateReviewStatus
+} from './utility_functions.js';
+import { fetchCurrentRecord, fetchUpcomingRecords } from './record_fetching.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Common error handler
-    function handleError(error, message = 'No more records to review') {
-        console.error('Error:', error);
-        const container = document.getElementById('record-container');
-        container.innerHTML = `<p>${message}</p>`;
+// Error handler
+function handleError(error, message = 'No more records to review') {
+    console.error('Error:', error);
+    const container = document.getElementById('record-container');
+    container.innerHTML = `<p>${message}</p>`;
 
-        // Disable buttons when no records are left
-        ['match-btn', 'no-match-btn', 'unsure-btn'].forEach(btnId => {
-            document.getElementById(btnId).disabled = true;
-        });
+    ['match-btn', 'no-match-btn', 'unsure-btn'].forEach(btnId => {
+        document.getElementById(btnId).disabled = true;
+    });
+}
+
+// Process functions
+async function processMatch() {
+    showLoadingSpinner();
+    try {
+        const response = await fetch('/match', { method: 'POST' });
+        const data = await response.json();
+        console.log('Match processed:', data);
+        await fetchCurrentRecord();
+        return data;
+    } catch (error) {
+        console.error('Error processing match:', error);
+        throw error;
+    } finally {
+        hideLoadingSpinner();
     }
+}
 
-    // Common fetch handler
-    async function handleFetch(url, method = 'POST') {
-        try {
-            showLoadingSpinner();
-            console.log(`Making ${method} request to ${url}`);
-
-            const response = await fetch(url, { method });
-            logResponse(response);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Received data:', data);
-            return data;
-        } catch (error) {
-            console.error(`Error in ${url}:`, error);
-            throw error;
-        }
+async function processNoMatch() {
+    showLoadingSpinner();
+    try {
+        const response = await fetch('/no_match', { method: 'POST' });
+        const data = await response.json();
+        console.log('No match processed:', data);
+        await fetchCurrentRecord();
+        return data;
+    } catch (error) {
+        console.error('Error processing no match:', error);
+        throw error;
+    } finally {
+        hideLoadingSpinner();
     }
+}
 
+async function processUnsure() {
+    showLoadingSpinner();
+    try {
+        const response = await fetch('/unsure', { method: 'POST' });
+        const data = await response.json();
+        console.log('Unsure processed:', data);
+        await fetchCurrentRecord();
+        return data;
+    } catch (error) {
+        console.error('Error processing unsure:', error);
+        throw error;
+    } finally {
+        hideLoadingSpinner();
+    }
+}
+
+// Setup function to add all event listeners
+function setupEventListeners() {
     // Match button handler
     document.getElementById('match-btn').addEventListener('click', async () => {
         try {
             console.log('Match button clicked');
-            const data = await handleFetch('/match');
-            await fetchCurrentRecord();
+            await processMatch();
             await fetchUpcomingRecords();
-            incrementAssignmentCounter();
+            await updateReviewStatus();
+            window.incrementAssignmentCounter();
         } catch (error) {
             handleError(error);
-        } finally {
-            hideLoadingSpinner();
         }
     });
 
@@ -56,14 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('no-match-btn').addEventListener('click', async () => {
         try {
             console.log('No Match button clicked');
-            const data = await handleFetch('/no_match');
-            await fetchCurrentRecord();
+            await processNoMatch();
             await fetchUpcomingRecords();
-            incrementAssignmentCounter();
+            await updateReviewStatus();
+            window.incrementAssignmentCounter();
         } catch (error) {
             handleError(error);
-        } finally {
-            hideLoadingSpinner();
         }
     });
 
@@ -71,14 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('unsure-btn').addEventListener('click', async () => {
         try {
             console.log('Unsure button clicked');
-            const data = await handleFetch('/unsure');
-            await fetchCurrentRecord();
+            await processUnsure();
             await fetchUpcomingRecords();
-            incrementAssignmentCounter();
+            await updateReviewStatus();
+            window.incrementAssignmentCounter();
         } catch (error) {
             handleError(error);
-        } finally {
-            hideLoadingSpinner();
         }
     });
 
@@ -86,8 +112,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('go-back-btn').addEventListener('click', async () => {
         try {
             console.log('Go Back button clicked');
-            const record = await handleFetch('/go_back_one');
+            showLoadingSpinner();
+            const response = await fetch('/go_back_one', { method: 'POST' });
 
+            if (!response.ok) {
+                throw new Error('No previous records');
+            }
+
+            const record = await response.json();
+            console.log('Go Back response:', record);
+
+            if (record.error) {
+                throw new Error(record.error);
+            }
+
+            // Update the record display
             const container = document.getElementById('record-container');
             container.innerHTML = `
                 <h2>Organization Details</h2>
@@ -111,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            updateReviewStatus();
+            await updateReviewStatus();
             await fetchUpcomingRecords();
         } catch (error) {
             handleError(error, 'No previous records to review');
@@ -127,8 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoadingSpinner();
 
             const response = await fetch('/export_review_results');
-            const blob = await response.blob();
+            console.log('Export response:', response);
 
+            if (!response.ok) {
+                throw new Error('Export failed');
+            }
+
+            const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -139,8 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error('Export error:', error);
+            alert('Failed to export results. Please try again.');
         } finally {
             hideLoadingSpinner();
         }
     });
-});
+}
+
+// Export necessary functions
+export { processMatch, processNoMatch, processUnsure, setupEventListeners };
