@@ -1,0 +1,19 @@
+replicaCount: 2
+
+bwell:
+  environment: 'dev-ue1'
+  iamRole: 'arn:aws:iam::875300655693:role/dev-irsa-provider-detective'
+  ingress:
+    internal:
+      enabled: true
+      hosts:
+        - host: provider-detective.dev.bwell.zone
+          paths:
+            - '/'
+        - host: provider-detective.dev-ue1.bwell.zone
+          paths:
+            - '/'
+
+env:
+  - name: ENV
+    value: dev

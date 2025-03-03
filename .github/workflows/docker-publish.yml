@@ -1,0 +1,47 @@
+name: Docker to AWS ECR
+
+on:
+  release:
+    types: [created]
+
+env:
+  IMAGE_NAME: provider-detective
+  REPOSITORY_URL: 856965016623.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: [self-hosted,main]
+
+    steps:
+      - name: Create directory and set permissions
+        run: |
+          sudo mkdir -p /home/runner/_work/provider-detective/provider-detective
+          sudo chown -R runner:runner /home/runner/_work/provider-detective/provider-detective
+          sudo chmod 777 /home/runner/_work/provider-detective/provider-detective
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: refs/tags/${{ github.event.release.tag_name }}
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          echo ECR_REGISTRY=$ECR_REGISTRY
+          echo IMAGE_TAG=$IMAGE_TAG
+
+          docker build -t $REPOSITORY_URL/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $REPOSITORY_URL/$IMAGE_NAME:$IMAGE_TAG      
