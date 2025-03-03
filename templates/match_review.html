@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Review Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .record-details {
+            background: #f4f4f4;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e7f3fe;
+            border: 1px solid #b6d4fe;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #export-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        #export-btn:hover {
+            background-color: #45a049;
+        }
+        .loading-spinner {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Match Review Interface</h1>
+    </header>
+    <main>
+        <div id="record-container" class="record-details">
+            <p>Loading record...</p>
+        </div>
+        <div class="buttons">
+            <button id="match-btn" aria-label="Match">Match ✅</button>
+            <button id="no-match-btn" aria-label="No Match">No Match ❌</button>
+            <button id="unsure-btn" aria-label="Unsure">Unsure 🤔</button>
+            <button id="go-back-btn" aria-label="Go Back One">Go Back One ⬅️</button>
+        </div>
+        <div id="status-container">
+            <div>
+                <h3>Review Status</h3>
+                <p>Current Record: <span id="current-record">-</span></p>
+                <p>Total Records: <span id="total-records">-</span></p>
+                <p>Matched: <span id="matched-count">0</span></p>
+                <p>Unmatched: <span id="unmatched-count">0</span></p>
+            </div>
+            <button id="export-btn" aria-label="Export Results">Export Results 📥</button>
+        </div>
+        <div id="upcoming-records-container" class="record-details">
+            <h2>Upcoming Records</h2>
+            <div id="upcoming-records"></div>
+        </div>
+        <div class="loading-spinner" id="loading-spinner"></div>
+    </main>
+    <script>
+        let assignmentCounter = 0;
+
+        // Utility function to log responses
+        function logResponse(response) {
+            console.log('Response status:', response.status);
+            console.log('Response body:', response);
+        }
+
+        // Show loading spinner
+        function showLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'block';
+        }
+
+        // Hide loading spinner
+        function hideLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+
+        // Update review status
+        function updateReviewStatus() {
+            fetch('/review_status')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Could not fetch review status');
+                    }
+                    return response.json();
+                })
+                .then(status => {
+                    document.getElementById('current-record').textContent = status.current_index + 1;
+                    document.getElementById('total-records').textContent = status.total_records;
+                    document.getElementById('matched-count').textContent = status.matched_count;
+                    document.getElementById('unmatched-count').textContent = status.unmatched_count;
+                })
+                .catch(error => {
+                    console.error('Error updating status:', error);
+                });
+        }
+
+        // Fetch and display current record
+        function fetchCurrentRecord() {
+            showLoadingSpinner();
+            return fetch('/current_record')
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(record => {
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = `
+                        <h2>Organization Details</h2>
+                        <div>
+                            <h3>Info</h3>
+                            <p><strong>Name:</strong> ${record.org_name}</p>
+                            <p><strong>ConnectHub Org ID:</strong> ${record.connecthub_org_id}</p>
+                            <p><strong>ConnectHub Display Label:</strong> ${record.connecthub_display_label}</p>
+                            <p><strong>Match Score:</strong> ${record.match_score}</p>
+                            <p><strong>NPI Count:</strong> ${record.npi_count}</p>
+                        </div>
+                        <div>
+                            <h3>Input</h3>
+                            <p><strong>Input Label:</strong> ${record.input_label}</p>
+                            <p><strong>Input States:</strong> ${record.input_states}</p>
+                        </div>
+                        <div>
+                            <h3>ConnectHub</h3>
+                            <p><strong>ConnectHub Label:</strong> ${record.connecthub_label}</p>
+                            <p><strong>ConnectHub States:</strong> ${record.connecthub_states}</p>
+                        </div>
+                    `;
+
+                    // Update status after successful record fetch
+                    updateReviewStatus();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                    document.getElementById('unsure-btn').disabled = true;
+                })
+                .finally(hideLoadingSpinner);
+        }
+
+        // Fetch and display upcoming records
+        // Fetch and display upcoming records
+        function fetchUpcomingRecords() {
+            fetch('/upcoming_records')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Could not fetch upcoming records');
+                    }
+                    return response.json();
+                })
+                .then(records => {
+                    const container = document.getElementById('upcoming-records');
+                    container.innerHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Input Label</th>
+                                    <th>ConnectHub Label</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${records.map(record => `
+                                    <tr>
+                                        <td>${record.input_label}</td>
+                                        <td>${record.connecthub_label}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching upcoming records:', error);
+                });
+        }
+
+        // Autosave function
+        function autosave() {
+            fetch('/autosave_review_results', { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Autosave failed');
+                    }
+                    console.log('Autosave successful');
+                })
+                .catch(error => {
+                    console.error('Error during autosave:', error);
+                });
+        }
+
+        // Increment assignment counter and check for autosave
+        function incrementAssignmentCounter() {
+            assignmentCounter++;
+            if (assignmentCounter >= 25) {
+                autosave();
+                assignmentCounter = 0; // Reset counter after autosave
+            }
+        }
+
+        // Match button handler
+        document.getElementById('match-btn').addEventListener('click', () => {
+            showLoadingSpinner();
+            fetch('/match', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(fetchCurrentRecord)
+                .then(fetchUpcomingRecords)
+                .then(incrementAssignmentCounter)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                    document.getElementById('unsure-btn').disabled = true;
+                })
+                .finally(hideLoadingSpinner);
+        });
+
+        // No Match button handler
+        document.getElementById('no-match-btn').addEventListener('click', () => {
+            showLoadingSpinner();
+            fetch('/no_match', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(fetchCurrentRecord)
+                .then(fetchUpcomingRecords)
+                .then(incrementAssignmentCounter)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                    document.getElementById('unsure-btn').disabled = true;
+                })
+                .finally(hideLoadingSpinner);
+        });
+
+        // Unsure button handler
+        document.getElementById('unsure-btn').addEventListener('click', () => {
+            showLoadingSpinner();
+            fetch('/unsure', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(fetchCurrentRecord)
+                .then(fetchUpcomingRecords)
+                .then(incrementAssignmentCounter)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                    document.getElementById('unsure-btn').disabled = true;
+                })
+                .finally(hideLoadingSpinner);
+        });
+
+        // Go Back One button handler
+        document.getElementById('go-back-btn').addEventListener('click', () => {
+            showLoadingSpinner();
+            fetch('/go_back_one', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No previous records');
+                    }
+                    return response.json();
+                })
+                .then(record => {
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = `
+                        <h2>Organization Details</h2>
+                        <div>
+                            <h3>Info</h3>
+                            <p><strong>Name:</strong> ${record.org_name}</p>
+                            <p><strong>ConnectHub Org ID:</strong> ${record.connecthub_org_id}</p>
+                            <p><strong>ConnectHub Display Label:</strong> ${record.connecthub_display_label}</p>
+                            <p><strong>Match Score:</strong> ${record.match_score}</p>
+                            <p><strong>NPI Count:</strong> ${record.npi_count}</p>
+                        </div>
+                        <div>
+                            <h3>Input</h3>
+                            <p><strong>Input Label:</strong> ${record.input_label}</p>
+                            <p><strong>Input States:</strong> ${record.input_states}</p>
+                        </div>
+                        <div>
+                            <h3>ConnectHub</h3>
+                            <p><strong>ConnectHub Label:</strong> ${record.connecthub_label}</p>
+                            <p><strong>ConnectHub States:</strong> ${record.connecthub_states}</p>
+                        </div>
+                    `;
+
+                    // Update status after successful record fetch
+                    updateReviewStatus();
+                })
+                .then(fetchUpcomingRecords)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No previous records to review</p>';
+
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                    document.getElementById('unsure-btn').disabled = true;
+                })
+                .finally(hideLoadingSpinner);
+        });
+
+        // Export results handler
+        document.getElementById('export-btn').addEventListener('click', () => {
+            showLoadingSpinner();
+            fetch('/export_review_results')
+                .then(response => response.blob())
+                .then(blob => {
+                    // Create a link to download the file
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Export error:', error))
+                .finally(hideLoadingSpinner);
+        });
+
+        // Initial load
+        fetchCurrentRecord().then(fetchUpcomingRecords);
+    </script>
+</body>
+</html>

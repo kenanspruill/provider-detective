@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Review Interface</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .record-details { 
+            background: #f4f4f4; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd;
+        }
+        .buttons { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 20px;
+        }
+        button { 
+            padding: 10px; 
+            margin: 5px; 
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e7f3fe;
+            border: 1px solid #b6d4fe;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #export-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        #export-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Match Review Interface</h1>
+    
+    <div id="record-container" class="record-details">
+        <p>Loading record...</p>
+    </div>
+    
+    <div class="buttons">
+        <button id="match-btn">Match ✅</button>
+        <button id="no-match-btn">No Match ❌</button>
+    </div>
+    
+    <div id="status-container">
+        <div>
+            <h3>Review Status</h3>
+            <p>Current Record: <span id="current-record">-</span></p>
+            <p>Total Records: <span id="total-records">-</span></p>
+            <p>Matched: <span id="matched-count">0</span></p>
+            <p>Unmatched: <span id="unmatched-count">0</span></p>
+        </div>
+        <button id="export-btn">Export Results 📥</button>
+    </div>
+
+    <script>
+        // Utility function to log responses
+        function logResponse(response) {
+            console.log('Response status:', response.status);
+            console.log('Response body:', response);
+        }
+
+        // Update review status
+        function updateReviewStatus() {
+            fetch('/review_status')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Could not fetch review status');
+                    }
+                    return response.json();
+                })
+                .then(status => {
+                    document.getElementById('current-record').textContent = status.current_index + 1;
+                    document.getElementById('total-records').textContent = status.total_records;
+                    document.getElementById('matched-count').textContent = status.matched_count;
+                    document.getElementById('unmatched-count').textContent = status.unmatched_count;
+                })
+                .catch(error => {
+                    console.error('Error updating status:', error);
+                });
+        }
+
+        // Fetch and display current record
+        function fetchCurrentRecord() {
+            fetch('/current_record')
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(record => {
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = `
+                        <h2>Organization Details</h2>
+                        <p><strong>Name:</strong> ${record.org_name}</p>
+                        <p><strong>Input Label:</strong> ${record.input_label}</p>
+                        <p><strong>ConnectHub Label:</strong> ${record.connecthub_label}</p>
+                        <p><strong>Match Score:</strong> ${record.match_score}</p>
+                        <p><strong>Unique NPIs:</strong> ${record.unique_npis}</p>
+                        <p><strong>NPI Count:</strong> ${record.npi_count}</p>
+                        <p><strong>Input States:</strong> ${record.input_states}</p>
+                        <p><strong>ConnectHub States:</strong> ${record.connecthub_states}</p>
+                    `;
+                    
+                    // Update status after successful record fetch
+                    updateReviewStatus();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+                    
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                });
+        }
+
+        // Match button handler
+        document.getElementById('match-btn').addEventListener('click', () => {
+            fetch('/match', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(fetchCurrentRecord)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+                    
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                });
+        });
+
+        // No Match button handler
+        document.getElementById('no-match-btn').addEventListener('click', () => {
+            fetch('/no_match', { method: 'POST' })
+                .then(response => {
+                    logResponse(response);
+                    if (!response.ok) {
+                        throw new Error('No more records');
+                    }
+                    return response.json();
+                })
+                .then(fetchCurrentRecord)
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('record-container');
+                    container.innerHTML = '<p>No more records to review</p>';
+                    
+                    // Disable buttons when no records are left
+                    document.getElementById('match-btn').disabled = true;
+                    document.getElementById('no-match-btn').disabled = true;
+                });
+        });
+
+        // Export results handler
+        document.getElementById('export-btn').addEventListener('click', () => {
+            fetch('/export_review_results')
+                .then(response => response.blob())
+                .then(blob => {
+                    // Create a link to download the file
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Export error:', error));
+        });
+
+        // Initial load
+        fetchCurrentRecord();
+    </script>
+</body>
+</html>
