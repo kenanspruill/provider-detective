@@ -159,6 +159,9 @@ function setupEventListeners() {
         }
     });
 
+    //
+    // In button_handlers.js, update the export button handler in the setupEventListeners function:
+
     // Export results handler
     document.getElementById('export-btn').addEventListener('click', async () => {
         try {
@@ -172,15 +175,39 @@ function setupEventListeners() {
                 throw new Error('Export failed');
             }
 
+            // Get the filename from the Content-Disposition header if available
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="?([^"]*)"?/);
+                if (filenameMatch && filenameMatch[1]) {
+                    filename = filenameMatch[1];
+                }
+            }
+
+            // Get the blob from the response
             const blob = await response.blob();
+            console.log('Received blob:', blob);
+
+            // Create a download link
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
+            a.download = filename;
+
+            // Add to document, click, and cleanup
             document.body.appendChild(a);
+            console.log('Triggering download...');
             a.click();
-            window.URL.revokeObjectURL(url);
+
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                console.log('Download cleanup completed');
+            }, 100);
+
         } catch (error) {
             console.error('Export error:', error);
             alert('Failed to export results. Please try again.');

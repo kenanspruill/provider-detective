@@ -185,29 +185,49 @@ def get_all_review_results():
         }
     })
 
+
 @app.route('/export_review_results', methods=['GET'])
 def export_review_results():
-    import pandas as pd
-    import os
-    from flask import send_file
+    """
+    Export review results to a CSV file
+    """
+    try:
+        # Combine matched and unmatched records with match status
+        matched_records = [dict(record, match_status='match')
+                           for record in match_review.matched_records]
+        unmatched_records = [dict(record, match_status='no_match')
+                             for record in match_review.unmatched_records
+                             if record.get('match_status') != 'unsure']
+        unsure_records = [record for record in match_review.unmatched_records
+                          if record.get('match_status') == 'unsure']
 
-    matched_records = [dict(record, match_status='match') for record in match_review.matched_records]
-    unmatched_records = [dict(record, match_status='no_match') for record in match_review.unmatched_records if record.get('match_status') != 'unsure']
-    unsure_records = [record for record in match_review.unmatched_records if record.get('match_status') == 'unsure']
-    all_reviewed = matched_records + unmatched_records + unsure_records
+        all_reviewed = matched_records + unmatched_records + unsure_records
 
-    df = pd.DataFrame(all_reviewed)
-    df['unique_npis'] = match_review.matches_df['unique_npis']
+        # Convert to DataFrame
+        df = pd.DataFrame(all_reviewed)
 
-    export_dir = 'review_exports'
-    os.makedirs(export_dir, exist_ok=True)
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f'review_results_{timestamp}.csv'
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f'{export_dir}/review_results_{timestamp}.csv'
+        # Create a string buffer
+        from io import StringIO
+        buffer = StringIO()
+        df.to_csv(buffer, index=False)
+        buffer.seek(0)
 
-    df.to_csv(filename, index=False)
+        # Send file
+        return send_file(
+            buffer,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=filename,
+            attachment_filename=filename  # For older Flask versions
+        )
 
-    return send_file(filename, as_attachment=True)
+    except Exception as e:
+        logger.error(f"Error in export_review_results: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/go_back_one', methods=['POST'])
 def go_back_one():
