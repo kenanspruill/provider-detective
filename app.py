@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import pandas as pd
 import numpy as np
 import logging
+import os
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -9,36 +11,45 @@ handler = logging.FileHandler('app.log')
 handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(handler)
 
+
 def create_matches_dataframe_from_csv(file_path='input.csv'):
     """
     Create a DataFrame for match review from a CSV file
-
-    Args:
-        file_path (str): Path to the CSV file
-
-    Returns:
-        pd.DataFrame: Matches DataFrame
     """
     try:
-        # Read the CSV file into a DataFrame
+        if not os.path.exists(file_path):
+            logger.error(f"Input file not found: {file_path}")
+            raise FileNotFoundError(f"Input file not found: {file_path}")
+
         matches_df = pd.read_csv(file_path)
+
+        # Validate required columns
+        required_columns = [
+            'first_record.orig_Organization_Name',
+            'first_record.fuzzy_ConnectHubOrganizationId',
+            'first_record.fuzzy_ConnectHubDisplayLabel',
+            'first_record.fuzzy_fuzzy_match_score',
+            'npi_count'
+        ]
+
+        missing_columns = [col for col in required_columns if col not in matches_df.columns]
+        if missing_columns:
+            raise ValueError(f"Missing required columns: {missing_columns}")
+
         return matches_df
+
     except Exception as e:
         logger.error(f"Error reading CSV file: {str(e)}")
-        return pd.DataFrame()  # Return an empty DataFrame in case of error
+        raise
+
 class MatchReviewApp:
     def __init__(self, matches_df):
-        """
-        Initialize the match review application
-        
-        Args:
-            matches_df (pd.DataFrame): DataFrame containing potential matches
-        """
         self.matches_df = matches_df
         self.current_index = 0
         self.matched_records = []
         self.unmatched_records = []
-    
+        self.unsure_records = []  # Add this line
+
     def get_current_record(self):
         """
         Get the current record
@@ -63,13 +74,13 @@ class MatchReviewApp:
 # Create Flask app
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
     """
     Render the main review page
     """
-    return render_template('match_review.html')
-
+    return render_template('index.html')  # Changed from match_review.html # render_template('match_review.html')
 @app.route('/current_record')
 def current_record():
     """
@@ -86,34 +97,17 @@ def record_match():
     Record a match decision
     """
     try:
-        # Log current state before processing
-        logger.info(f"Current index before match: {match_review.current_index}")
-        logger.info(f"Total records: {len(match_review.matches_df)}")
-        
-        # Get current record before incrementing
         current_record = match_review.get_current_record()
-        
         if current_record:
-            # Record match
             match_review.matched_records.append(current_record)
             match_review.current_index += 1
-            
-            logger.info(f"Matched record: {current_record['org_name']}")
-            logger.info(f"Current index after match: {match_review.current_index}")
-            
-            # Get next record
             next_record = match_review.get_current_record()
-            
             if next_record:
-                logger.info(f"Next record: {next_record['org_name']}")
                 return jsonify(next_record)
             else:
-                logger.info("No more records to review")
                 return jsonify({"error": "No more records"}), 404
         else:
-            logger.warning("Attempted to match when no current record exists")
             return jsonify({"error": "No current record"}), 400
-    
     except Exception as e:
         logger.error(f"Error in match route: {str(e)}")
         return jsonify({"error": str(e)}), 500
@@ -124,52 +118,39 @@ def record_no_match():
     Record a no match decision
     """
     try:
-        # Log current state before processing
-        logger.info(f"Current index before no match: {match_review.current_index}")
-        logger.info(f"Total records: {len(match_review.matches_df)}")
-        
-        # Get current record before incrementing
         current_record = match_review.get_current_record()
-        
         if current_record:
-            # Record no match
             match_review.unmatched_records.append(current_record)
             match_review.current_index += 1
-            
-            logger.info(f"No matched record: {current_record['org_name']}")
-            logger.info(f"Current index after no match: {match_review.current_index}")
-            
-            # Get next record
             next_record = match_review.get_current_record()
-            
             if next_record:
-                logger.info(f"Next record: {next_record['org_name']}")
                 return jsonify(next_record)
             else:
-                logger.info("No more records to review")
                 return jsonify({"error": "No more records"}), 404
         else:
-            logger.warning("Attempted to no match when no current record exists")
             return jsonify({"error": "No current record"}), 400
-    
     except Exception as e:
         logger.error(f"Error in no_match route: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-# Add a route to check current state
+# Add these routes to your existing Flask app
 @app.route('/review_status', methods=['GET'])
 def review_status():
     """
     Get the current review status
     """
-    return jsonify({
-        'current_index': match_review.current_index,
-        'total_records': len(match_review.matches_df),
-        'matched_count': len(match_review.matched_records),
-        'unmatched_count': len(match_review.unmatched_records)
-    })
-# Add these routes to your existing Flask app
-
+    try:
+        status = {
+            'current_index': match_review.current_index,
+            'total_records': len(match_review.matches_df),
+            'matched_count': len(match_review.matched_records),
+            'unmatched_count': len(match_review.unmatched_records)
+        }
+        print("Status being returned:", status)  # Add this debug line
+        return jsonify(status)
+    except Exception as e:
+        print(f"Error in review_status: {e}")  # Add this debug line
+        return jsonify({"error": str(e)}), 500
 @app.route('/get_matched_records', methods=['GET'])
 def get_matched_records():
     """
@@ -206,30 +187,27 @@ def get_all_review_results():
             'percentage_complete': (match_review.current_index / len(match_review.matches_df)) * 100 if match_review.matches_df is not None else 0
         }
     })
+
+
 @app.route('/unsure', methods=['POST'])
 def record_unsure():
     """
     Record an unsure decision
     """
     try:
-        # Log current state before processing
         logger.info(f"Current index before unsure: {match_review.current_index}")
         logger.info(f"Total records: {len(match_review.matches_df)}")
 
-        # Get current record before incrementing
         current_record = match_review.get_current_record()
-
         if current_record:
-            # Record unsure
-            match_review.unmatched_records.append(dict(current_record, match_status='unsure'))
+            # Record unsure in separate list
+            match_review.unsure_records.append(current_record)
             match_review.current_index += 1
 
             logger.info(f"Unsure record: {current_record['org_name']}")
             logger.info(f"Current index after unsure: {match_review.current_index}")
 
-            # Get next record
             next_record = match_review.get_current_record()
-
             if next_record:
                 logger.info(f"Next record: {next_record['org_name']}")
                 return jsonify(next_record)
@@ -237,9 +215,8 @@ def record_unsure():
                 logger.info("No more records to review")
                 return jsonify({"error": "No more records"}), 404
         else:
-            logger.warning("Attempted to unsure when no current record exists")
+            logger.warning("Attempted to mark as unsure when no current record exists")
             return jsonify({"error": "No current record"}), 400
-
     except Exception as e:
         logger.error(f"Error in unsure route: {str(e)}")
         return jsonify({"error": str(e)}), 500
@@ -350,5 +327,6 @@ def autosave_review_results():
 
 if __name__ == '__main__':
     sample_matches_df = create_matches_dataframe_from_csv('input.csv')
+    print(f"Loaded {len(sample_matches_df)} records")  # Add this
     match_review = MatchReviewApp(sample_matches_df)
     app.run(debug=True)
