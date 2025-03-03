@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Review Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Match Review Interface</h1>
+    </header>
+    <main>
+        {% include 'components/record_container.html' %}
+        {% include 'components/buttons.html' %}
+        {% include 'components/status_container.html' %}
+        {% include 'components/upcoming_records.html' %}
+        {% include 'components/review_process.html' %}
+        {% include 'components/matching_considerations.html' %}
+
+        <div class="loading-spinner" id="loading-spinner"></div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/utility_functions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/record_fetching.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/button_handlers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
