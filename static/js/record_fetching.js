@@ -1,49 +1,67 @@
-function fetchCurrentRecord() {
+// record_fetching.js
+
+import {
+    showLoadingSpinner,
+    hideLoadingSpinner,
+    logResponse,
+    updateReviewStatus
+} from './utility_functions.js';
+
+
+export async function fetchCurrentRecord() {
     console.log('Fetching current record...'); // Debug log
-    showLoadingSpinner();
-    return fetch('/current_record')
+    fetch('/current_record')
         .then(response => {
             console.log('Current record response:', response); // Debug log
-            logResponse(response);
             if (!response.ok) {
-                throw new Error('No more records');
+                throw new Error('Could not fetch current record');
             }
             return response.json();
         })
         .then(record => {
-            console.log('Received record:', record); // Debug log
-            const container = document.getElementById('record-container');
+            console.log('Received current record:', record); // Debug log
+            if (record.error) {
+                alert(record.error);
+                return;
+            }
+            const container = document.getElementById('current-record');
             container.innerHTML = `
-                <!-- Your existing HTML template -->
+                <div>
+                    <h3>${record.org_name}</h3>
+                    <p>ConnectHub ID: ${record.connecthub_org_id}</p>
+                    <p>Display Label: ${record.connecthub_display_label}</p>
+                    <p>Match Score: ${record.match_score}</p>
+                    <p>NPI Count: ${record.npi_count}</p>
+                    <p>Input Label: ${record.input_label}</p>
+                    <p>Input States: ${record.input_states}</p>
+                    <p>ConnectHub Label: ${record.connecthub_label}</p>
+                    <p>ConnectHub States: ${record.connecthub_states}</p>
+                </div>
             `;
-
-            // Call updateReviewStatus and wait for it to complete
-            return updateReviewStatus().then(() => record);
         })
         .catch(error => {
-            console.error('Error:', error);
-            const container = document.getElementById('record-container');
-            container.innerHTML = '<p>No more records to review</p>';
-
-            // Disable buttons when no records are left
-            ['match-btn', 'no-match-btn', 'unsure-btn'].forEach(btnId => {
-                document.getElementById(btnId).disabled = true;
-            });
-            throw error;
-        })
-        .finally(hideLoadingSpinner);
+            console.error('Error fetching current record:', error);
+        });
 }
-
-function fetchUpcomingRecords() {
-    fetch('/upcoming_records')
+export async function fetchUpcomingRecords() {
+    console.log('Fetching upcoming records...');
+    return fetch('/upcoming_records')
         .then(response => {
+            console.log('Upcoming records response:', response);
             if (!response.ok) {
                 throw new Error('Could not fetch upcoming records');
             }
             return response.json();
         })
         .then(records => {
+            console.log('Received upcoming records:', records);
             const container = document.getElementById('upcoming-records');
+
+            if (!records || records.length === 0) {
+                container.innerHTML = '<p>No more upcoming records</p>';
+                return;
+            }
+
             container.innerHTML = `
                 <table>
                     <thead>
@@ -55,8 +73,8 @@ function fetchUpcomingRecords() {
                     <tbody>
                         ${records.map(record => `
                             <tr>
-                                <td>${record.input_label}</td>
-                                <td>${record.connecthub_label}</td>
+                                <td>${record.input_label || 'N/A'}</td>
+                                <td>${record.connecthub_label || 'N/A'}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -71,4 +89,4 @@ function fetchUpcomingRecords() {
 }
 
 // Export functions to be used in other files
-export { fetchCurrentRecord, fetchUpcomingRecords };
+// export { fetchCurrentRecord, fetchUpcomingRecords };

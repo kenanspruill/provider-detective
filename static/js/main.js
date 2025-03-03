@@ -1,3 +1,12 @@
+// main.js
+import {
+    showLoadingSpinner,
+    hideLoadingSpinner,
+    updateReviewStatus
+} from './utility_functions.js';
+import { fetchCurrentRecord, fetchUpcomingRecords } from './record_fetching.js';
+import { setupEventListeners } from './button_handlers.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Document loaded, initializing...');
 
@@ -22,27 +31,33 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Assignment counter: ${assignmentCounter}`);
         if (assignmentCounter >= 25) {
             autosave();
-            assignmentCounter = 0; // Reset counter after autosave
+            assignmentCounter = 0;
         }
     }
 
-    // Make incrementAssignmentCounter available globally
+    // Make functions available globally
     window.incrementAssignmentCounter = incrementAssignmentCounter;
+    window.autosave = autosave;
 
     // Initialize the application
     async function initializeApp() {
         try {
-            console.log('Starting initial status update');
+            console.log('Starting initialization...');
             await updateReviewStatus();
-            console.log('Initial status update complete');
-
-            console.log('Fetching initial record');
             await fetchCurrentRecord();
-            console.log('Initial record fetch complete');
-
-            console.log('Fetching upcoming records');
             await fetchUpcomingRecords();
-            console.log('Initial upcoming records fetch complete');
+
+            // Set up event listeners after initial data is loaded
+            setupEventListeners();
+
+            // Add periodic status updates
+            setInterval(() => {
+                updateReviewStatus()
+                    .then(() => console.log('Status updated'))
+                    .catch(error => console.error('Error updating status:', error));
+            }, 30000);
+
+            console.log('Initialization complete');
         } catch (error) {
             console.error('Error during initialization:', error);
         }
@@ -55,14 +70,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('unhandledrejection', event => {
         console.error('Unhandled promise rejection:', event.reason);
     });
-
-    // Optional: Add periodic status updates
-    setInterval(() => {
-        updateReviewStatus()
-            .then(() => console.log('Status updated'))
-            .catch(error => console.error('Error updating status:', error));
-    }, 30000); // Update every 30 seconds
 });
-
-// Make sure these functions are available globally if needed
-window.autosave = autosave;
