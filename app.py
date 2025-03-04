@@ -210,20 +210,25 @@ def export_review_results():
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f'review_results_{timestamp}.csv'
 
-        # Create a string buffer
-        from io import StringIO
-        buffer = StringIO()
-        df.to_csv(buffer, index=False)
-        buffer.seek(0)
+        # Create a temporary file
+        import tempfile
+        temp = tempfile.NamedTemporaryFile(delete=False)
 
-        # Send file
-        return send_file(
-            buffer,
-            mimetype='text/csv',
-            as_attachment=True,
-            download_name=filename,
-            attachment_filename=filename  # For older Flask versions
-        )
+        try:
+            # Save DataFrame to CSV
+            df.to_csv(temp.name, index=False)
+
+            # Send file
+            return send_file(
+                temp.name,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name=filename  # Use download_name instead of attachment_filename
+            )
+        finally:
+            # Clean up the temporary file
+            import os
+            os.unlink(temp.name)
 
     except Exception as e:
         logger.error(f"Error in export_review_results: {str(e)}")

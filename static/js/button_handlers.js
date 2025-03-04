@@ -70,6 +70,25 @@ async function processUnsure() {
 // Setup function to add all event listeners
 function setupEventListeners() {
     // Match button handler
+
+        // Check if all required elements exist
+    const matchBtn = document.getElementById('match-btn');
+    const noMatchBtn = document.getElementById('no-match-btn');
+    const unsureBtn = document.getElementById('unsure-btn');
+    const goBackBtn = document.getElementById('go-back-btn');
+    const exportBtn = document.getElementById('export-btn');
+
+    if (!matchBtn || !noMatchBtn || !unsureBtn || !goBackBtn || !exportBtn) {
+        console.error('Some required buttons are missing from the DOM:', {
+            matchBtn: !!matchBtn,
+            noMatchBtn: !!noMatchBtn,
+            unsureBtn: !!unsureBtn,
+            goBackBtn: !!goBackBtn,
+            exportBtn: !!exportBtn
+        });
+        return;
+    }
+
     document.getElementById('match-btn').addEventListener('click', async () => {
         try {
             console.log('Match button clicked');
@@ -163,7 +182,8 @@ function setupEventListeners() {
     // In button_handlers.js, update the export button handler in the setupEventListeners function:
 
     // Export results handler
-    document.getElementById('export-btn').addEventListener('click', async () => {
+        // Export results handler
+    exportBtn.addEventListener('click', async () => {
         try {
             console.log('Export button clicked');
             showLoadingSpinner();
@@ -175,28 +195,15 @@ function setupEventListeners() {
                 throw new Error('Export failed');
             }
 
-            // Get the filename from the Content-Disposition header if available
-            const contentDisposition = response.headers.get('Content-Disposition');
-            let filename = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
-            if (contentDisposition) {
-                const filenameMatch = contentDisposition.match(/filename="?([^"]*)"?/);
-                if (filenameMatch && filenameMatch[1]) {
-                    filename = filenameMatch[1];
-                }
-            }
-
-            // Get the blob from the response
             const blob = await response.blob();
             console.log('Received blob:', blob);
 
-            // Create a download link
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = filename;
+            a.download = `review_results_${new Date().toISOString().replace(/:/g, '-')}.csv`;
 
-            // Add to document, click, and cleanup
             document.body.appendChild(a);
             console.log('Triggering download...');
             a.click();
@@ -215,6 +222,8 @@ function setupEventListeners() {
             hideLoadingSpinner();
         }
     });
+    console.log('All event listeners set up successfully');
+
 }
 
 // Export necessary functions

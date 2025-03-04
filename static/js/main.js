@@ -43,19 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializeApp() {
         try {
             console.log('Starting initialization...');
+
+            // Make sure DOM is ready
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Set up event listeners first
+            setupEventListeners();
+            console.log('Event listeners set up');
+
+            // Then load data
             await updateReviewStatus();
             await fetchCurrentRecord();
             await fetchUpcomingRecords();
-
-            // Set up event listeners after initial data is loaded
-            setupEventListeners();
-
-            // Add periodic status updates
-            setInterval(() => {
-                updateReviewStatus()
-                    .then(() => console.log('Status updated'))
-                    .catch(error => console.error('Error updating status:', error));
-            }, 30000);
 
             console.log('Initialization complete');
         } catch (error) {
