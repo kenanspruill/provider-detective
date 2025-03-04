@@ -135,11 +135,53 @@ button:disabled {
     margin-bottom: 10px;
     color: #333;
 }
+#llm-consultation-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}
 
+#llm-consult-btn {
+    margin-bottom: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#llm-consult-result {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    min-height: 50px;
+}
 /* Make the table responsive */
 @media screen and (max-width: 600px) {
     #upcoming-records table {
         display: block;
         overflow-x: auto;
     }
+}
+
+#api-key-input-container {
+    margin-bottom: 10px;
+}
+
+#openai-api-key {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+#llm-consult-btn {
+    margin-bottom: 10px;
+}
+
+#llm-consult-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

@@ -4,6 +4,12 @@ import numpy as np
 import logging
 import os
 from datetime import datetime
+import openai
+from dotenv import load_dotenv
+import traceback
+
+# Load environment variables from .env file
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -203,6 +209,10 @@ def export_review_results():
 
         all_reviewed = matched_records + unmatched_records + unsure_records
 
+        # Add LLM consultation results if available
+        for record in all_reviewed:
+            record['llm_consultation'] = record.get('llm_consultation', '')
+
         # Convert to DataFrame
         df = pd.DataFrame(all_reviewed)
 
@@ -223,7 +233,7 @@ def export_review_results():
                 temp.name,
                 mimetype='text/csv',
                 as_attachment=True,
-                download_name=filename  # Use download_name instead of attachment_filename
+                download_name=filename
             )
         finally:
             # Clean up the temporary file
@@ -293,6 +303,91 @@ def autosave_review_results():
     df.to_csv(filename, index=False)
 
     return jsonify({"message": "Autosave successful"})
+
+
+@app.route('/llm_match_consultation', methods=['POST'])
+def llm_match_consultation():
+    """
+    Consult OpenAI LLM to evaluate match between organizations
+    """
+    try:
+        # Get request data
+        data = request.get_json()
+
+        # Log received data for debugging
+        print("Received data:", data)
+
+        org_name = data.get('org_name')
+        connecthub_name = data.get('connecthub_name')
+        api_key = data.get('api_key')
+
+        # Validate input with more detailed logging
+        if not org_name or not connecthub_name:
+            print("Missing organization names")
+            return jsonify({"error": "Missing organization names"}), 400
+
+        if not api_key:
+            print("API key is missing")
+            return jsonify({"error": "API key is required"}), 401
+
+        # Prepare OpenAI client with provided API key
+        try:
+            client = openai.OpenAI(
+                api_key=api_key
+            )
+        except Exception as client_error:
+            print(f"Client initialization error: {client_error}")
+            return jsonify({"error": "Failed to initialize API client"}), 500
+
+        # Construct prompt
+        prompt = f"""
+        Evaluate whether these two organization names likely represent the same entity:
+
+        Payor Organization Name: {org_name}
+        ConnectHub Organization Name: {connecthub_name}
+
+        Provide a detailed analysis considering:
+        - Lexical similarity
+        - Potential abbreviations or variations
+        - Likelihood of being the same organization
+        - Contextual clues from healthcare industry
+
+        Response Requirements:
+        - Concise (2-3 sentences)
+        - Objective analysis
+        - Include a confidence percentage (0-100%)
+        - Format: 
+          "Confidence: X%
+           Analysis: [Your analysis here]"
+        """
+
+        # Make LLM call
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",  # Or gpt-4 if you prefer
+                messages=[
+                    {"role": "system",
+                     "content": "You are a healthcare organization name matching assistant specialized in identifying organizational equivalence."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=200,
+                temperature=0.5
+            )
+
+            # Extract response
+            llm_response = response.choices[0].message.content.strip()
+
+            return jsonify({"llm_response": llm_response})
+
+        except Exception as llm_error:
+            print(f"LLM call error: {llm_error}")
+            return jsonify({"error": "Failed to process LLM request"}), 500
+
+    except Exception as e:
+        # Log the full error for debugging
+        print("Unexpected error:", str(e))
+        print(traceback.format_exc())
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
     sample_matches_df = create_matches_dataframe_from_csv('input.csv')

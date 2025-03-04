@@ -67,29 +67,78 @@ async function processUnsure() {
     }
 }
 
-// Setup function to add all event listeners
-function setupEventListeners() {
-    // Match button handler
+// LLM consultation function
+async function consultLLMForMatch(orgName, connectHubName, apiKey) {
+    try {
+        console.log('Consulting LLM for match...');
+        console.log('API Key provided:', apiKey ? 'Yes' : 'No');
+        console.log('Org Names:', { orgName, connectHubName });
 
-        // Check if all required elements exist
+        showLoadingSpinner();
+
+        const response = await fetch('/llm_match_consultation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                org_name: orgName,
+                connecthub_name: connectHubName,
+                api_key: apiKey
+            })
+        });
+
+        console.log('Response status:', response.status);
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.error || 'LLM consultation failed');
+        }
+
+        return responseData.llm_response;
+    } catch (error) {
+        console.error('Full LLM consultation error:', error);
+
+        // More detailed error message
+        const errorMessage = error.message || 'Unknown error occurred';
+        alert(`Failed to consult LLM: ${errorMessage}`);
+
+        return null;
+    } finally {
+        hideLoadingSpinner();
+    }
+}
+
+// button_handlers.js
+
+function setupEventListeners() {
+    // Check if all required elements exist
     const matchBtn = document.getElementById('match-btn');
     const noMatchBtn = document.getElementById('no-match-btn');
     const unsureBtn = document.getElementById('unsure-btn');
     const goBackBtn = document.getElementById('go-back-btn');
     const exportBtn = document.getElementById('export-btn');
+    const llmConsultBtn = document.getElementById('llm-consult-btn');
+    const llmConsultResult = document.getElementById('llm-consult-result');
+    const apiKeyInput = document.getElementById('openai-api-key'); // Updated to match HTML
 
-    if (!matchBtn || !noMatchBtn || !unsureBtn || !goBackBtn || !exportBtn) {
-        console.error('Some required buttons are missing from the DOM:', {
+    if (!matchBtn || !noMatchBtn || !unsureBtn || !goBackBtn || !exportBtn || !llmConsultBtn || !llmConsultResult || !apiKeyInput) {
+        console.error('Some required elements are missing from the DOM:', {
             matchBtn: !!matchBtn,
             noMatchBtn: !!noMatchBtn,
             unsureBtn: !!unsureBtn,
             goBackBtn: !!goBackBtn,
-            exportBtn: !!exportBtn
+            exportBtn: !!exportBtn,
+            llmConsultBtn: !!llmConsultBtn,
+            llmConsultResult: !!llmConsultResult,
+            apiKeyInput: !!apiKeyInput
         });
         return;
     }
 
-    document.getElementById('match-btn').addEventListener('click', async () => {
+    // Match button handler
+    matchBtn.addEventListener('click', async () => {
         try {
             console.log('Match button clicked');
             await processMatch();
@@ -102,7 +151,7 @@ function setupEventListeners() {
     });
 
     // No Match button handler
-    document.getElementById('no-match-btn').addEventListener('click', async () => {
+    noMatchBtn.addEventListener('click', async () => {
         try {
             console.log('No Match button clicked');
             await processNoMatch();
@@ -115,7 +164,7 @@ function setupEventListeners() {
     });
 
     // Unsure button handler
-    document.getElementById('unsure-btn').addEventListener('click', async () => {
+    unsureBtn.addEventListener('click', async () => {
         try {
             console.log('Unsure button clicked');
             await processUnsure();
@@ -128,7 +177,7 @@ function setupEventListeners() {
     });
 
     // Go Back One button handler
-    document.getElementById('go-back-btn').addEventListener('click', async () => {
+    goBackBtn.addEventListener('click', async () => {
         try {
             console.log('Go Back button clicked');
             showLoadingSpinner();
@@ -178,11 +227,7 @@ function setupEventListeners() {
         }
     });
 
-    //
-    // In button_handlers.js, update the export button handler in the setupEventListeners function:
-
     // Export results handler
-        // Export results handler
     exportBtn.addEventListener('click', async () => {
         try {
             console.log('Export button clicked');
@@ -222,9 +267,39 @@ function setupEventListeners() {
             hideLoadingSpinner();
         }
     });
-    console.log('All event listeners set up successfully');
 
+    // LLM Consultation Button
+    llmConsultBtn.addEventListener('click', async () => {
+        try {
+            console.log('LLM Consult button clicked');
+            const orgNameElement = Array.from(document.querySelectorAll('#record-container p')).find(p => p.textContent.includes('Name:'));
+            const connectHubNameElement = Array.from(document.querySelectorAll('#record-container p')).find(p => p.textContent.includes('ConnectHub Display Label:'));
+
+            if (!orgNameElement || !connectHubNameElement) {
+                alert('Could not find organization names');
+                return;
+            }
+
+            const orgName = orgNameElement.textContent.replace('Name:', '').trim();
+            const connectHubName = connectHubNameElement.textContent.replace('ConnectHub Display Label:', '').trim();
+            const apiKey = apiKeyInput.value;
+
+            const llmResponse = await consultLLMForMatch(orgName, connectHubName, apiKey);
+
+            if (llmResponse) {
+                llmConsultResult.innerHTML = `
+                    <h3>LLM Match Consultation</h3>
+                    <p>${llmResponse}</p>
+                `;
+            }
+        } catch (error) {
+            console.error('LLM consultation error:', error);
+            alert('Failed to consult LLM. Please try again.');
+        }
+    });
+
+    console.log('All event listeners set up successfully');
 }
 
 // Export necessary functions
-export { processMatch, processNoMatch, processUnsure, setupEventListeners };
+export { processMatch, processNoMatch, processUnsure, setupEventListeners, consultLLMForMatch };
