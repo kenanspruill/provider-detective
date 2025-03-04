@@ -67,6 +67,30 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position the tooltip above the text */
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -75,7 +99,25 @@
     </header>
     <main>
         <div id="record-container" class="record-details">
-            <p>Loading record...</p>
+            <h2>Organization Details</h2>
+            <div>
+                <h3>Info</h3>
+                <p><strong class="tooltip">Name:<span class="tooltiptext">The official name of the organization</span></strong> GRADY MEMORIAL HOSPITAL CORPORATION</p>
+                <p><strong class="tooltip">ConnectHub Org ID:<span class="tooltiptext">Unique identifier for the organization in ConnectHub</span></strong> 6793e05e37747f17b541791c</p>
+                <p><strong class="tooltip">ConnectHub Display Label:<span class="tooltiptext">The display label for the organization in ConnectHub</span></strong> Grady Health System</p>
+                <p><strong class="tooltip">Match Score:<span class="tooltiptext">The confidence score of the match</span></strong> 100</p>
+                <p><strong class="tooltip">NPI Count:<span class="tooltiptext">Number of National Provider Identifiers associated with the organization</span></strong> 193</p>
+            </div>
+            <div>
+                <h3>Input</h3>
+                <p><strong class="tooltip">Input Label:<span class="tooltiptext">The label provided as input for matching</span></strong> grady memorial hospital</p>
+                <p><strong class="tooltip">Input States:<span class="tooltiptext">The states associated with the input label</span></strong> ["GA"]</p>
+            </div>
+            <div>
+                <h3>ConnectHub</h3>
+                <p><strong class="tooltip">ConnectHub Label:<span class="tooltiptext">The label in ConnectHub for the organization</span></strong> grady memorial hospital</p>
+                <p><strong class="tooltip">ConnectHub States:<span class="tooltiptext">The states associated with the ConnectHub label</span></strong> nan</p>
+            </div>
         </div>
         <div class="buttons">
             <button id="match-btn" aria-label="Match">Match ✅</button>
@@ -97,6 +139,40 @@
             <h2>Upcoming Records</h2>
             <div id="upcoming-records"></div>
         </div>
+        <section>
+            <h2>Review Process 📋</h2>
+            <ol>
+                <li>Carefully examine the organization details</li>
+                <li>Compare input and ConnectHub labels</li>
+                <li>Consider matching criteria such as:
+                    <ul>
+                        <li>Name similarity</li>
+                        <li>Fuzzy match scores</li>
+                        <li>NPI (National Provider Identifier) consistency</li>
+                        <li>Geographical state alignment</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+        <section>
+            <h2>Matching Considerations 🤔</h2>
+            <ul>
+                <li>Look for semantic similarities in organization names</li>
+                <li>Check for consistent state information</li>
+                <li>Verify NPI uniqueness and distribution</li>
+                <li>Evaluate the confidence of potential matches</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Why This Matters 💡</h2>
+            <p>Accurate organization matching is crucial for:</p>
+            <ul>
+                <li>Healthcare data interoperability</li>
+                <li>Reducing duplicate records</li>
+                <li>Improving data quality</li>
+                <li>Facilitating better healthcare information exchange</li>
+            </ul>
+        </section>
         <div class="loading-spinner" id="loading-spinner"></div>
     </main>
     <script>
@@ -155,21 +231,21 @@
                         <h2>Organization Details</h2>
                         <div>
                             <h3>Info</h3>
-                            <p><strong>Name:</strong> ${record.org_name}</p>
-                            <p><strong>ConnectHub Org ID:</strong> ${record.connecthub_org_id}</p>
-                            <p><strong>ConnectHub Display Label:</strong> ${record.connecthub_display_label}</p>
-                            <p><strong>Match Score:</strong> ${record.match_score}</p>
-                            <p><strong>NPI Count:</strong> ${record.npi_count}</p>
+                            <p><strong class="tooltip">Name:<span class="tooltiptext">The official name of the organization</span></strong> ${record.org_name}</p>
+                            <p><strong class="tooltip">ConnectHub Org ID:<span class="tooltiptext">Unique identifier for the organization in ConnectHub</span></strong> ${record.connecthub_org_id}</p>
+                            <p><strong class="tooltip">ConnectHub Display Label:<span class="tooltiptext">The display label for the organization in ConnectHub</span></strong> ${record.connecthub_display_label}</p>
+                            <p><strong class="tooltip">Match Score:<span class="tooltiptext">The confidence score of the match</span></strong> ${record.match_score}</p>
+                            <p><strong class="tooltip">NPI Count:<span class="tooltiptext">Number of National Provider Identifiers associated with the organization</span></strong> ${record.npi_count}</p>
                         </div>
                         <div>
                             <h3>Input</h3>
-                            <p><strong>Input Label:</strong> ${record.input_label}</p>
-                            <p><strong>Input States:</strong> ${record.input_states}</p>
+                            <p><strong class="tooltip">Input Label:<span class="tooltiptext">The label provided as input for matching</span></strong> ${record.input_label}</p>
+                            <p><strong class="tooltip">Input States:<span class="tooltiptext">The states associated with the input label</span></strong> ${record.input_states}</p>
                         </div>
                         <div>
                             <h3>ConnectHub</h3>
-                            <p><strong>ConnectHub Label:</strong> ${record.connecthub_label}</p>
-                            <p><strong>ConnectHub States:</strong> ${record.connecthub_states}</p>
+                            <p><strong class="tooltip">ConnectHub Label:<span class="tooltiptext">The label in ConnectHub for the organization</span></strong> ${record.connecthub_label}</p>
+                            <p><strong class="tooltip">ConnectHub States:<span class="tooltiptext">The states associated with the ConnectHub label</span></strong> ${record.connecthub_states}</p>
                         </div>
                     `;
 
@@ -189,7 +265,6 @@
                 .finally(hideLoadingSpinner);
         }
 
-        // Fetch and display upcoming records
         // Fetch and display upcoming records
         function fetchUpcomingRecords() {
             fetch('/upcoming_records')
@@ -346,21 +421,21 @@
                         <h2>Organization Details</h2>
                         <div>
                             <h3>Info</h3>
-                            <p><strong>Name:</strong> ${record.org_name}</p>
-                            <p><strong>ConnectHub Org ID:</strong> ${record.connecthub_org_id}</p>
-                            <p><strong>ConnectHub Display Label:</strong> ${record.connecthub_display_label}</p>
-                            <p><strong>Match Score:</strong> ${record.match_score}</p>
-                            <p><strong>NPI Count:</strong> ${record.npi_count}</p>
+                            <p><strong class="tooltip">Name:<span class="tooltiptext">The official name of the organization</span></strong> ${record.org_name}</p>
+                            <p><strong class="tooltip">ConnectHub Org ID:<span class="tooltiptext">Unique identifier for the organization in ConnectHub</span></strong> ${record.connecthub_org_id}</p>
+                            <p><strong class="tooltip">ConnectHub Display Label:<span class="tooltiptext">The display label for the organization in ConnectHub</span></strong> ${record.connecthub_display_label}</p>
+                            <p><strong class="tooltip">Match Score:<span class="tooltiptext">The confidence score of the match</span></strong> ${record.match_score}</p>
+                            <p><strong class="tooltip">NPI Count:<span class="tooltiptext">Number of National Provider Identifiers associated with the organization</span></strong> ${record.npi_count}</p>
                         </div>
                         <div>
                             <h3>Input</h3>
-                            <p><strong>Input Label:</strong> ${record.input_label}</p>
-                            <p><strong>Input States:</strong> ${record.input_states}</p>
+                            <p><strong class="tooltip">Input Label:<span class="tooltiptext">The label provided as input for matching</span></strong> ${record.input_label}</p>
+                            <p><strong class="tooltip">Input States:<span class="tooltiptext">The states associated with the input label</span></strong> ${record.input_states}</p>
                         </div>
                         <div>
                             <h3>ConnectHub</h3>
-                            <p><strong>ConnectHub Label:</strong> ${record.connecthub_label}</p>
-                            <p><strong>ConnectHub States:</strong> ${record.connecthub_states}</p>
+                            <p><strong class="tooltip">ConnectHub Label:<span class="tooltiptext">The label in ConnectHub for the organization</span></strong> ${record.connecthub_label}</p>
+                            <p><strong class="tooltip">ConnectHub States:<span class="tooltiptext">The states associated with the ConnectHub label</span></strong> ${record.connecthub_states}</p>
                         </div>
                     `;
 
