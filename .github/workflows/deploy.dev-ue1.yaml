@@ -1,0 +1,33 @@
+name: Deploy Dev
+
+on:
+  workflow_dispatch:
+
+env:
+  SERVICE_NAME: provider-detective
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: [self-hosted, main]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: refs/tags/${{ github.event.inputs.tag }}
+
+      - name: Checkout icanbwell/cie.gha-deploy
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: icanbwell/cie.gha-deploy
+          token: ${{ secrets.BWELL_DEV_PAT }}
+          path: .github/actions/cie.gha-deploy
+
+      - name: Deploy
+        uses: ./.github/actions/cie.gha-deploy
+        with:
+          token: ${{ secrets.BWELL_DEV_PAT }}
+          service-name: $SERVICE_NAME
+          env: 'dev-ue1'
