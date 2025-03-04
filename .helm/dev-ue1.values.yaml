@@ -1,5 +1,8 @@
 replicaCount: 2
 
+image:
+  tag: "latest"
+
 bwell:
   environment: 'dev-ue1'
   iamRole: 'arn:aws:iam::875300655693:role/dev-irsa-provider-detective'

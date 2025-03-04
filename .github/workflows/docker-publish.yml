@@ -9,17 +9,9 @@ env:
   REPOSITORY_URL: 856965016623.dkr.ecr.us-east-1.amazonaws.com
 
 jobs:
-  # See also https://docs.docker.com/docker-hub/builds/
   push:
     runs-on: [self-hosted,main]
-
     steps:
-      - name: Create directory and set permissions
-        run: |
-          sudo mkdir -p /home/runner/_work/provider-detective/provider-detective
-          sudo chown -R runner:runner /home/runner/_work/provider-detective/provider-detective
-          sudo chmod 777 /home/runner/_work/provider-detective/provider-detective
-
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
